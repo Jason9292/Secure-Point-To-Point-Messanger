@@ -182,19 +182,20 @@ public class chat_client extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void msg_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msg_sendActionPerformed
-        // TODO add your handling code here:
+        // This function will send encrypted text, same that the server uses:
         byte[] encrypt;
         String encrypted = "";
-        String k = "e1fb98d4c389679c";
+        String k = "e1fb98d4c389679c";                                          //64 bit key
         
+        /*Converting the key into an 8 byte array given a
+        function from the DES.java project*/
         long k1 = Long.decode("0x" + k.substring(0,8)).longValue();
         long k2 = Long.decode("0x" + k.substring(8,16)).longValue();
-        
         byte[] key = DES.twoLongsTo8ByteArray(k2,k1);
         
         IDESRound round = new OneRound();
         
-        try{
+        try{                                                                    //making sure password is correct, if not message wont send
             if (pResult.getText().equals("Correct")){
                 String msgOut = "";
                 msgOut = msg_text.getText().trim();
@@ -311,7 +312,7 @@ public class chat_client extends javax.swing.JFrame {
         });
         
         try {
-            TimeUnit.SECONDS.sleep(10);
+            TimeUnit.SECONDS.sleep(10);                           //delay attempted to connection 
         }
         catch(Exception e) {
             msg_area.setText("Good luck next time");
