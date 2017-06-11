@@ -154,10 +154,10 @@ public class chatServer extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void msg_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msg_sendActionPerformed
-        // TODO add your handling code here:
+        // This function will send the encrypted text:
         byte[] encrypt;
         String encrypted = "";
-        String k = "e1fb98d4c389679c";
+        String k = "e1fb98d4c389679c";                                              //64 bit hexadecimal key
         /*Converting the key into an 8 byte array given a
         function from the DES.java project*/
         long k1 = Long.decode("0x" + k.substring(0,8)).longValue();
@@ -220,11 +220,11 @@ public class chatServer extends javax.swing.JFrame {
 
     private void submitPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitPActionPerformed
         // TODO add your handling code here:
-        String data = password.getText();
-        data = data + "E1F53135E559C253";
+        String data = password.getText();                       //get the user's inputed password
+        data = data + "E1F53135E559C253";                       //add salt to that password
         MessageDigest messageDigest;
         try {
-            messageDigest = MessageDigest.getInstance("SHA-256");
+            messageDigest = MessageDigest.getInstance("SHA-256");           //Hash that password incase of dictionary attacks
             messageDigest.update(data.getBytes());
             byte[] messageDigestSHA256 = messageDigest.digest();
             StringBuffer stringBuffer = new StringBuffer();
@@ -234,7 +234,7 @@ public class chatServer extends javax.swing.JFrame {
             
             String pass = stringBuffer.toString();
             
-            if (pass.equals("f24b7b2c02de108bfd5fe70d26a81845de5b6d8bb56265fc50d0ed0815dcb495")){
+            if (pass.equals("f24b7b2c02de108bfd5fe70d26a81845de5b6d8bb56265fc50d0ed0815dcb495")){       //compare hashed value to correctly hashed value
                 pResult.setText("Correct");
             }
             else{
@@ -284,7 +284,7 @@ public class chatServer extends javax.swing.JFrame {
         Need to use the same key for encryption as decryption
         */
         byte[] output;
-        String k = "e1fb98d4c389679c";
+        String k = "e1fb98d4c389679c";                                      //have same key for decryption as encryption
         
         long k1 = Long.decode("0x" + k.substring(0,8)).longValue();
         long k2 = Long.decode("0x" + k.substring(8,16)).longValue();
@@ -298,7 +298,7 @@ public class chatServer extends javax.swing.JFrame {
             Where the port is specified, if this is
             changed must change the port on the client
             */
-            servSock = new ServerSocket(1201);
+            servSock = new ServerSocket(1201);                              //set up server on this port 
             clntSock = servSock.accept();
             
             in = new DataInputStream(clntSock.getInputStream());
@@ -307,7 +307,7 @@ public class chatServer extends javax.swing.JFrame {
             /*
             Password check again
             */
-            while(!incoming.equals("exit") && pResult.getText().equals("Correct"))  
+            while(!incoming.equals("exit") && pResult.getText().equals("Correct"))      //Server won't receive messages if password is incorrect
             {
                 incoming = in.readUTF();
                 /*
@@ -318,7 +318,7 @@ public class chatServer extends javax.swing.JFrame {
                 long d2 = Long.decode("0x" + incoming.substring(8,16)).longValue();
                 
                 byte[] data = DES.twoLongsTo8ByteArray(d2,d1);
-                output = DES.decode(data,key,round);
+                output = DES.decode(data,key,round);                        //decrypt the message
                 
                 String s = "";
                 s = DES.byteArrayToString(output);
